@@ -1,10 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Flight Booker</title>
+    <script type="text/javascript" src="../packages/hotdrink.js"></script>
+    <script src="flight-booker.js"></script>
 </head>
 <body>
-$END$
+<h1>
+    Book one-way and two-way flights
+</h1>
+<table>
+    <tbody>
+    <tr>
+        <select name="type" id="type">
+            <option value="one">One-way flight</option>
+            <option value="two">Return flight</option>
+        </select></tr>
+    <tr>
+        <td><input type="text" id="one"></td>
+    </tr>
+    <tr>
+        <td><input type="text" id="two"></td>
+    </tr>
+    <tr>
+        <td>
+            <button id="book">Book</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
