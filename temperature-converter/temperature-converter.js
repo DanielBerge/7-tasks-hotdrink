@@ -17,8 +17,8 @@ window.onload = () => {
     let component = hd.component`
      var celcius = 0, fahrenheit;
      constraint TemperatureConverter {
-       ToFahrenheit(celcius -> fahrenheit) => celcius * (9/5) + 32;
-       ToCelcius(fahrenheit -> celcius) => (fahrenheit - 32) * (5/9);
+       toFahrenheit(celcius -> fahrenheit) => celcius * (9/5) + 32;
+       toCelcius(fahrenheit -> celcius) => (fahrenheit - 32) * (5/9);
      }
      `;
 
