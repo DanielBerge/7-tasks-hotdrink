@@ -1,6 +1,17 @@
-import {twoWayNumberTextBinder} from "../packages/hotdrink-binders";
-
 let system = new hd.ConstraintSystem();
+
+function textBinder(box, v) {
+    v.value.subscribe({
+        next: val => {
+            if (val.hasOwnProperty('value')) {
+                box.value = val.value;
+            }
+        }
+    });
+    box.addEventListener('input', () => {
+        v.value.set(parseFloat(box.value));
+    });
+}
 
 window.onload = () => {
     let component = hd.component`
@@ -14,6 +25,6 @@ window.onload = () => {
     system.addComponent(component);
     system.update();
 
-    twoWayNumberTextBinder(document.getElementById("celcius"), component.vs.celcius);
-    twoWayNumberTextBinder(document.getElementById("fahrenheit"), component.vs.fahrenheit);
+    textBinder(document.getElementById("celcius"), component.vs.celcius);
+    textBinder(document.getElementById("fahrenheit"), component.vs.fahrenheit);
 }
