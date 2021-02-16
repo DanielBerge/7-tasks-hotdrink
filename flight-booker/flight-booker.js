@@ -24,7 +24,6 @@ function textBinder(box, v, disabled) {
 function btnBinder(btn, disabled) {
     disabled.value.subscribe({
         next: val => {
-            console.log(val.value);
             btn.disabled = val.value;
         }
     });
@@ -48,9 +47,6 @@ window.onload = () => {
     component state {
         var one = "", two = "", twoDisabled, btnDisabled, flightType = "one";
         constraint {
-            oneIsFirst(one -> two) => one;
-        }
-        constraint {
             twoIsSelected(flightType -> twoDisabled) => flightType == "one";
         }
         constraint {
@@ -58,6 +54,8 @@ window.onload = () => {
                 if (flightType === "one" && one === "") {
                     return true;
                 } else if (flightType === "two" && (one === "" || two === "")) {
+                    return true;
+                } else if (flightType === "two" && new Date(one).getTime() > new Date(two).getTime()) {
                     return true;
                 }
                 return false;
