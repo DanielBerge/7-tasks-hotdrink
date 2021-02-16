@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timer</title>
+    <script type="text/javascript" src="../packages/hotdrink.js"></script>
+    <script src="timer.js"></script>
+</head>
+<body>
+<h1>
+    Timer
+</h1>
+
+<table>
+    <tbody>
+    <tr>
+        <td>
+            <label for="timer">Elapsed time: </label>
+            <progress id="timer" value="32" max="100"></progress>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="duration">Duration: </label>
+            <input type="range" min="1" max="100" value="50" class="slider" id="duration">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button id="reset">Reset timer</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
