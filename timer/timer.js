@@ -1,4 +1,5 @@
 let system = new hd.ConstraintSystem();
+var count = 0.0;
 
 
 function progressBinder(progress, max, value) {
@@ -35,6 +36,10 @@ function sliderBinder(slider, v) {
     });
 }
 
+function onClick() {
+    count = 0.0;
+}
+
 window.onload = () => {
     let component = hd.component`
         var maxTimer, maxDuration = 15, duration = 0;
@@ -47,9 +52,6 @@ window.onload = () => {
     system.addComponent(component);
     system.update();
 
-
-    var count = 0.0;
-
     var timer = setInterval(function () {
         component.vs.duration.value.set(count);
         count = count + 0.1;
@@ -57,7 +59,6 @@ window.onload = () => {
             clearInterval(timer);
         }
     }, 100);
-
 
     progressBinder(document.getElementById('timer'), component.vs.maxTimer, component.vs.duration);
     sliderBinder(document.getElementById('duration'), component.vs.maxDuration);
