@@ -1,40 +1,7 @@
+import {maxBinder, valueBinder} from "../packages/binders.js";
+
 let system = new hd.ConstraintSystem();
 let start = Date.now();
-
-
-function progressBinder(progress, max, value) {
-    max.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                progress.max = val.value;
-            }
-        }
-    });
-    value.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                progress.value = val.value;
-            }
-        }
-    });
-
-    progress.addEventListener('input', () => {
-        max.value.set(progress.max);
-    });
-}
-
-function sliderBinder(slider, v) {
-    v.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                slider.value = val.value;
-            }
-        }
-    });
-    slider.addEventListener('input', () => {
-        v.value.set(slider.value);
-    });
-}
 
 function textBinder(text, v) {
     v.value.subscribe({
@@ -72,7 +39,10 @@ window.onload = () => {
         }
     }, 100);
 
-    progressBinder(document.getElementById('timer'), component.vs.maxTimer, component.vs.duration);
-    sliderBinder(document.getElementById('duration'), component.vs.maxDuration);
+    maxBinder(document.getElementById('timer'), component.vs.maxTimer);
+    valueBinder(document.getElementById('timer'), component.vs.duration);
+    valueBinder(document.getElementById('duration'), component.vs.maxDuration);
     textBinder(document.getElementById('textTimer'), component.vs.duration);
+
+    document.getElementById('reset').addEventListener('click', onClick);
 }
