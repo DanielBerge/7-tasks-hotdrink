@@ -1,5 +1,5 @@
 let system = new hd.ConstraintSystem();
-var count = 0.0;
+let start = Date.now();
 
 
 function progressBinder(progress, max, value) {
@@ -36,8 +36,18 @@ function sliderBinder(slider, v) {
     });
 }
 
+function textBinder(text, v) {
+    v.value.subscribe({
+        next: val => {
+            if (val.hasOwnProperty('value')) {
+                text.innerText = v.value.value + "s";
+            }
+        }
+    })
+}
+
 function onClick() {
-    count = 0.0;
+    start = Date.now();
 }
 
 window.onload = () => {
@@ -52,14 +62,17 @@ window.onload = () => {
     system.addComponent(component);
     system.update();
 
-    var timer = setInterval(function () {
-        component.vs.duration.value.set(count);
-        count = count + 0.1;
-        if (count >= 30) {
-            clearInterval(timer);
+    setInterval(function () {
+        let delta = Date.now() - start;
+        let value = Math.floor(delta / 100) / 10;
+        if (value >= component.vs.maxDuration.value.value) {
+            component.vs.duration.value.set(component.vs.maxDuration.value.value);
+        } else {
+            component.vs.duration.value.set(value);
         }
     }, 100);
 
     progressBinder(document.getElementById('timer'), component.vs.maxTimer, component.vs.duration);
     sliderBinder(document.getElementById('duration'), component.vs.maxDuration);
+    textBinder(document.getElementById('textTimer'), component.vs.duration);
 }
