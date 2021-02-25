@@ -1,30 +1,19 @@
-let system = new hd.ConstraintSystem();
+import {valueBinder} from "../packages/binders.js";
 
-function textBinder(box, v) {
-    v.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                box.value = val.value;
-            }
-        }
-    });
-    box.addEventListener('input', () => {
-        v.value.set(parseFloat(box.value));
-    });
-}
+let system = new hd.ConstraintSystem();
 
 window.onload = () => {
     let component = hd.component`
-     var celcius = 0, fahrenheit;
+     var celcius, fahrenheit;
      constraint TemperatureConverter {
-       toFahrenheit(celcius -> fahrenheit) => celcius * (9/5) + 32;
-       toCelcius(fahrenheit -> celcius) => (fahrenheit - 32) * (5/9);
+       (celcius -> fahrenheit) => celcius * (9/5) + 32;
+       (fahrenheit -> celcius) => (fahrenheit - 32) * (5/9);
      }
      `;
 
     system.addComponent(component);
     system.update();
 
-    textBinder(document.getElementById("celcius"), component.vs.celcius);
-    textBinder(document.getElementById("fahrenheit"), component.vs.fahrenheit);
+    valueBinder(document.getElementById("celcius"), component.vs.celcius);
+    valueBinder(document.getElementById("fahrenheit"), component.vs.fahrenheit);
 }
