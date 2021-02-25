@@ -19,10 +19,10 @@ function onClick() {
 
 window.onload = () => {
     let component = hd.component`
-        var maxTimer, maxDuration = 15, duration = 0;
+        var maxProgress, maxDuration = 15, duration = 0;
         
         constraint {
-            (maxDuration -> maxTimer) => maxDuration;
+            (maxDuration -> maxProgress) => maxDuration;
         }
     `;
 
@@ -39,8 +39,8 @@ window.onload = () => {
         }
     }, 100);
 
-    maxBinder(document.getElementById('timer'), component.vs.maxTimer);
-    valueBinder(document.getElementById('timer'), component.vs.duration);
+    maxBinder(document.getElementById('progress'), component.vs.maxProgress);
+    valueBinder(document.getElementById('progress'), component.vs.duration);
     valueBinder(document.getElementById('duration'), component.vs.maxDuration);
     textBinder(document.getElementById('textTimer'), component.vs.duration);
 
