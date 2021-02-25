@@ -1,46 +1,6 @@
+import {disabledBinder, valueBinder} from "../packages/binders.js";
+
 let system = new hd.ConstraintSystem();
-
-
-function textBinder(box, v, disabled) {
-    if (disabled !== undefined) {
-        disabled.value.subscribe({
-            next: val => {
-                box.disabled = val.value;
-            }
-        });
-    }
-    v.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                box.value = val.value;
-            }
-        }
-    });
-    box.addEventListener('input', () => {
-        v.value.set(box.value);
-    });
-}
-
-function btnBinder(btn, disabled) {
-    disabled.value.subscribe({
-        next: val => {
-            btn.disabled = val.value;
-        }
-    });
-}
-
-function selectBinder(sel, v) {
-    v.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                sel.value = val.value;
-            }
-        }
-    });
-    sel.addEventListener('input', () => {
-        v.value.set(sel.value);
-    });
-}
 
 window.onload = () => {
     let component = hd.component`
@@ -67,8 +27,9 @@ window.onload = () => {
     system.addComponent(component);
     system.update();
 
-    textBinder(document.getElementById("one"), component.vs.one);
-    textBinder(document.getElementById("two"), component.vs.two, component.vs.twoDisabled);
-    btnBinder(document.getElementById("book"), component.vs.btnDisabled);
-    selectBinder(document.getElementById("flightType"), component.vs.flightType);
+    valueBinder(document.getElementById("one"), component.vs.one);
+    valueBinder(document.getElementById("two"), component.vs.two);
+    disabledBinder(document.getElementById("two"), component.vs.twoDisabled);
+    disabledBinder(document.getElementById("book"), component.vs.btnDisabled);
+    valueBinder(document.getElementById("flightType"), component.vs.flightType);
 }
