@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>CRUD</title>
+    <script type="text/javascript" src="../packages/hotdrink.js"></script>
+    <script type="module" src="crud.js"></script>
 </head>
 <body>
 <table>
@@ -11,16 +13,12 @@
     </tr>
     <tr>
         <td>
-            <select name="??" size="5">
-                <option value="Test">hmm</option>
-                <option value="Test2">hmm23</option>
-                <option value="Test2">hmmfsd</option>
-                <option value="Test2">hmmfsdfa</option>
+            <select size="5" id="list">
             </select>
         </td>
         <td>
-            <label for="name">Name: </label><input id="name">
-            <label for="surname">Surname: </label><input id="surname">
+            <label for="name">Name: </label><input id="name" type="text">
+            <label for="surname">Surname: </label><input id="surname" type="text">
         </td>
     </tr>
     <tr>
