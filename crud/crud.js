@@ -9,32 +9,24 @@ let names = [
 ]
 
 export function changeValueBinder(element, value) {
-    value.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                console.log(val.value);
-                let node = document.createElement('option');
-                node.innerText = val.value;
-                document.getElementById('list').replaceChild(element.children.item(1), node);
-            }
-        }
-    });
     element.addEventListener('change', () => {
         value.value.set(element.value);
     });
 }
 
+
 window.onload = () => {
+    let nameElement = document.getElementById('name');
+    let surnameElement = document.getElementById('surname');
+
     let component = hd.component`
-        var changing, name, surname;
+        var changing = ", ", name, surname;
         
         constraint {
             (changing -> name) => changing.split(', ')[0];
-            (name -> changing) => name + changing.split(', ')[1];
         }
         constraint {
             (changing -> surname) => changing.split(', ')[1];
-            (surname -> changing) => surname + changing.split(', ')[0];
         }
     `;
 
@@ -42,9 +34,17 @@ window.onload = () => {
     system.update();
 
     changeValueBinder(document.getElementById('list'), component.vs.changing);
-    valueBinder(document.getElementById('name'), component.vs.name);
-    valueBinder(document.getElementById('surname'), component.vs.surname);
+    valueBinder(nameElement, component.vs.name);
+    valueBinder(surnameElement, component.vs.surname);
     createNames();
+
+    document.getElementById('create').addEventListener('click', () => {
+        addName(nameElement.value + ", " + surnameElement.value)
+    })
+
+    document.getElementById('delete').addEventListener('click', () => {
+        removeName(nameElement.value + ", " + surnameElement.value)
+    })
 }
 
 function createNames() {
@@ -52,6 +52,19 @@ function createNames() {
         let node = document.createElement('option');
         node.innerText = name;
         document.getElementById('list').appendChild(node);
-
     }
+}
+
+function addName(name) {
+    let node = document.createElement('option');
+    node.innerText = name;
+    document.getElementById('list').appendChild(node);
+}
+
+function removeName(s) {
+    document.getElementById('list').childNodes.forEach((value => {
+        if (value.value === s) {
+            document.getElementById('list').removeChild(value);
+        }
+    }));
 }
