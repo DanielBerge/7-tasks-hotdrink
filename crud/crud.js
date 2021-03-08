@@ -29,6 +29,9 @@ window.onload = () => {
             (changing -> surname) => changing.split(', ')[1];
         }
     `;
+    /**
+     * Prøve ut (changing -> name, surname) { return ["", ""]; }
+     */
 
     system.addComponent(component);
     system.update();
