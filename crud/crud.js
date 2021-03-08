@@ -23,15 +23,12 @@ window.onload = () => {
         var changing = ", ", name, surname;
         
         constraint {
-            (changing -> name) => changing.split(', ')[0];
-        }
-        constraint {
-            (changing -> surname) => changing.split(', ')[1];
+            (changing -> name, surname) => {
+                let split = changing.split(', ');
+                return [split[0], split[1]];
+            }
         }
     `;
-    /**
-     * Prøve ut (changing -> name, surname) { return ["", ""]; }
-     */
 
     system.addComponent(component);
     system.update();
