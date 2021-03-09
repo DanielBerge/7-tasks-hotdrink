@@ -24,7 +24,7 @@ window.onload = () => {
         if (!any) {
             let path = new Path2D();
             path.arc(event.x - 10, event.y - 100, 40, 0, 2 * Math.PI);
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = 'grey';
             ctx.fill(path);
             circles.push({
                 x: event.x - 10,
@@ -40,15 +40,23 @@ window.onload = () => {
             if (ctx.isPointInPath(circle.path, event.offsetX, event.offsetY)) {
                 ctx.fillStyle = 'green';
             } else {
-                ctx.fillStyle = 'red';
+                ctx.fillStyle = 'grey';
             }
             ctx.fill(circle.path);
         })
     });
 
+    // When the user clicks on <span> (x), close the modal
     let span = document.getElementsByClassName("close")[0];
     span.onclick = function () {
         adjust.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target === adjust) {
+            adjust.style.display = "none";
+        }
     }
 
     slider.addEventListener('input', () => {
@@ -57,7 +65,7 @@ window.onload = () => {
         let newPath = new Path2D();
         newPath.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
         obj.path = newPath;
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = 'grey';
         ctx.fill(obj.path);
         circles[selectedCircleIndex] = obj;
 
