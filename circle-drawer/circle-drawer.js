@@ -14,9 +14,10 @@ window.onload = () => {
         circles.forEach(circle => {
             if (ctx.isPointInPath(circle.path, event.offsetX, event.offsetY)) {
                 adjust.style.display = "block";
+                adjust.style.top = circle.y + "px";
+                adjust.style.left = circle.x + "px";
                 slider.value = circle.radius;
                 selectedCircleIndex = circles.indexOf(circle);
-
                 any = true;
             }
         })
@@ -59,7 +60,6 @@ window.onload = () => {
         ctx.fillStyle = 'red';
         ctx.fill(obj.path);
         circles[selectedCircleIndex] = obj;
-
 
         // Update canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
