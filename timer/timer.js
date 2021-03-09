@@ -13,10 +13,6 @@ function textBinder(text, v) {
     })
 }
 
-function onClick() {
-    start = Date.now();
-}
-
 window.onload = () => {
     let component = hd.component`
         var maxProgress, maxDuration = 15, duration = 0;
@@ -44,5 +40,7 @@ window.onload = () => {
     valueBinder(document.getElementById('duration'), component.vs.maxDuration);
     textBinder(document.getElementById('textTimer'), component.vs.duration);
 
-    document.getElementById('reset').addEventListener('click', onClick);
+    document.getElementById('reset').addEventListener('click', () => {
+        start = Date.now();
+    });
 }
