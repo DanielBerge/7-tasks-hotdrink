@@ -41,6 +41,7 @@ window.onload = () => {
             } else {
                 ctx.fillStyle = 'red';
             }
+            ctx.fill(circle.path);
         })
     });
 
@@ -49,28 +50,21 @@ window.onload = () => {
         adjust.style.display = "none";
     }
 
-
     slider.addEventListener('input', () => {
         let obj = circles[selectedCircleIndex];
         obj.radius = slider.value;
-        let path = new Path2D();
-        path.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
+        let newPath = new Path2D();
+        newPath.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
+        obj.path = newPath;
         ctx.fillStyle = 'red';
-        ctx.fill(path);
+        ctx.fill(obj.path);
         circles[selectedCircleIndex] = obj;
+
+
+        // Update canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        circles.forEach(circle => {
+            ctx.fill(circle.path);
+        });
     });
-}
-
-window.requestAnimationFrame(step);
-
-let start;
-
-function step(timestamp) {
-    console.log("fsf");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    circles.forEach(circle => {
-        ctx.fill(circle.path);
-    });
-
-    window.requestAnimationFrame(step);
 }
