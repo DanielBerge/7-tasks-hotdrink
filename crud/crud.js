@@ -20,7 +20,6 @@ export function changeValueBinder(element, value) {
 }
 
 window.onload = () => {
-
     let component = hd.component`
         var changing = ", ", name, surname;
         
