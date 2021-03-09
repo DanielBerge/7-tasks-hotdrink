@@ -8,16 +8,18 @@ let names = [
     "Tich, Roman"
 ]
 
+let filterElement = document.getElementById('filter');
+let listElement = document.getElementById('list');
+let nameElement = document.getElementById('name');
+let surnameElement = document.getElementById('surname');
+
 export function changeValueBinder(element, value) {
     element.addEventListener('change', () => {
         value.value.set(element.value);
     });
 }
 
-
 window.onload = () => {
-    let nameElement = document.getElementById('name');
-    let surnameElement = document.getElementById('surname');
 
     let component = hd.component`
         var changing = ", ", name, surname;
@@ -26,6 +28,9 @@ window.onload = () => {
             (changing -> name, surname) => {
                 let split = changing.split(', ');
                 return [split[0], split[1]];
+            }
+            (name, surname -> changing) => {
+                return name + ", " + surname;
             }
         }
     `;
@@ -36,35 +41,41 @@ window.onload = () => {
     changeValueBinder(document.getElementById('list'), component.vs.changing);
     valueBinder(nameElement, component.vs.name);
     valueBinder(surnameElement, component.vs.surname);
-    createNames();
+    syncList();
 
     document.getElementById('create').addEventListener('click', () => {
-        addName(nameElement.value + ", " + surnameElement.value)
+        names.push(nameElement.value + ", " + surnameElement.value)
+        syncList();
+    })
+
+    document.getElementById('update').addEventListener('click', () => {
+        let name = document.getElementById('list').value;
+        delete names[names.indexOf(name)];
+        names.push(component.vs.changing.value.value);
+        syncList();
     })
 
     document.getElementById('delete').addEventListener('click', () => {
-        removeName(nameElement.value + ", " + surnameElement.value)
+        let name = nameElement.value + ", " + surnameElement.value;
+        delete names[names.indexOf(name)];
+        syncList();
+    })
+
+    filterElement.addEventListener('input', () => {
+        syncList();
     })
 }
 
-function createNames() {
-    for (const name of names) {
-        let node = document.createElement('option');
-        node.innerText = name;
-        document.getElementById('list').appendChild(node);
+function syncList() {
+    while (listElement.hasChildNodes()) {
+        listElement.childNodes[0].remove();
     }
-}
 
-function addName(name) {
-    let node = document.createElement('option');
-    node.innerText = name;
-    document.getElementById('list').appendChild(node);
-}
-
-function removeName(s) {
-    document.getElementById('list').childNodes.forEach((value => {
-        if (value.value === s) {
-            document.getElementById('list').removeChild(value);
+    for (const name of names) {
+        if (name?.includes(filterElement.value)) {
+            let node = document.createElement('option');
+            node.innerText = name;
+            listElement.appendChild(node);
         }
-    }));
+    }
 }
