@@ -14,17 +14,30 @@ function createCells() {
         let tr = document.createElement('tr');
         tr.innerText = i.toString();
         for (let j = 0; j < 10; j++) {
-            let td = document.createElement('td');
             let input = document.createElement('input');
-            input.id = String.fromCharCode(j + 65) + i;
+            let td = document.createElement('td');
+
+            input.type = "hidden";
             input.addEventListener('change', () => {
                 console.log(input.id);
                 if (input.value.charAt(0) === "=") {
                     let connectId = input.value.slice(1, 3);
                     if (connectId.length === 2) {
-                        console.log(connectId);
+                        td.innerText = document.getElementById(connectId).innerText;
+                        input.type = "hidden";
+                        td.appendChild(input);
                     }
+                } else {
+                    td.innerText = input.value;
+                    input.type = "hidden";
+                    td.appendChild(input);
                 }
+            })
+
+            td.id = String.fromCharCode(j + 65) + i;
+
+            td.addEventListener('click', () => {
+                input.type = "text";
             })
 
             td.appendChild(input);
