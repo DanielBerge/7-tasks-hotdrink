@@ -21,7 +21,32 @@ function combiner(element, value) {
 }
 
 
-function createCells() {
+function parseStr(str, td) {
+    if (str.charAt(0) === "=") {
+        let connectId = str.slice(1, 3);
+        if (connectId.length === 2) {
+            let component = hd.component`
+                            var val, binded;
+                            
+                            constraint {
+                                (binded -> val) => binded;
+                            }
+                        `;
+            system.addComponent(component);
+            system.update();
+            binder(td, component.vs.val);
+            combiner(document.getElementById(connectId.toUpperCase()), component.vs.binded);
+        }
+    } else if (str.slice(0, 3) === "sum(") {
+
+    } else if (str.slice(0, 3) === "div(") {
+
+    } else {
+        td.innerText = str;
+    }
+}
+
+function createColums() {
     for (let i = -1; i < 10; i++) {
         let td = document.createElement('td');
         if (i >= 0) {
@@ -29,7 +54,9 @@ function createCells() {
         }
         document.getElementById('thead').appendChild(td);
     }
+}
 
+function createCells() {
     for (let i = 0; i < 10; i++) {
         let tr = document.createElement('tr');
         tr.innerText = i.toString();
@@ -41,24 +68,7 @@ function createCells() {
 
             input.type = "hidden";
             input.addEventListener('change', () => {
-                if (input.value.charAt(0) === "=") {
-                    let connectId = input.value.slice(1, 3);
-                    if (connectId.length === 2) {
-                        let component = hd.component`
-                            var val, binded;
-                            
-                            constraint {
-                                (binded -> val) => binded;
-                            }
-                        `;
-                        system.addComponent(component);
-                        system.update();
-                        binder(td, component.vs.val);
-                        combiner(document.getElementById(connectId), component.vs.binded);
-                    }
-                } else {
-                    td.innerText = input.value;
-                }
+                parseStr(input.value, td);
                 input.type = "hidden";
                 td.appendChild(input);
             })
@@ -80,6 +90,7 @@ function createCells() {
 }
 
 window.onload = () => {
+    createColums();
     createCells();
 
 }
