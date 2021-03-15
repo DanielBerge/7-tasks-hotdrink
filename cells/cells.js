@@ -37,10 +37,25 @@ function parseStr(str, td) {
             binder(td, component.vs.val);
             combiner(document.getElementById(connectId.toUpperCase()), component.vs.binded);
         }
-    } else if (str.slice(0, 3) === "sum(") {
+    } else if (str.slice(0, 4) === "sum(") {
 
-    } else if (str.slice(0, 3) === "div(") {
-
+    } else if (str.slice(0, 4) === "div(") {
+        let connectId = str.slice(4, 6);
+        let connectId2 = str.slice(7, 9);
+        console.log(connectId);
+        console.log(connectId2);
+        let component = hd.component`
+                            var val, divider, divisor;
+                            
+                            constraint {
+                                (divider, divisor -> val) => divisor/divider;
+                            }
+                        `;
+        system.addComponent(component);
+        system.update();
+        binder(td, component.vs.val);
+        combiner(document.getElementById(connectId.toUpperCase()), component.vs.divider);
+        combiner(document.getElementById(connectId2.toUpperCase()), component.vs.divisor);
     } else {
         td.innerText = str;
     }
