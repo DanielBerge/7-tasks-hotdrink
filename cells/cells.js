@@ -1,9 +1,10 @@
-let system = new hd.ConstraintSystem();
+import {evaluate, Field, lex, parse} from "./parser.js";
+import {bindConstraint} from "./constraints.js";
 
 const COLUMNS = 26;
 const ROWS = 100;
 
-function textBinder(element, value) {
+export function textBinder(element, value) {
     value.value.subscribe({
         next: val => {
             if (val.hasOwnProperty('value')) {
@@ -13,7 +14,7 @@ function textBinder(element, value) {
     })
 }
 
-function combiner(element, value) {
+export function combiner(element, value) {
     value.value.set(element.innerText);
     element.addEventListener('change', () => {
         value.value.set(element.innerText);
@@ -21,58 +22,6 @@ function combiner(element, value) {
     element.addEventListener('DOMSubtreeModified', () => {
         value.value.set(element.innerText);
     });
-}
-
-
-function parseStr(str, td) {
-    if (str.charAt(0) === "=") {
-        let connectId = str.slice(1, 3);
-        if (connectId.length === 2) {
-            let component = hd.component`
-                            var val, binded;
-                            
-                            constraint {
-                                (binded -> val) => binded;
-                            }
-                        `;
-            system.addComponent(component);
-            system.update();
-            textBinder(td, component.vs.val);
-            combiner(document.getElementById(connectId.toUpperCase()), component.vs.binded);
-        }
-    } else if (str.slice(0, 4) === "sum(") {
-        let connectId = str.slice(4, 6);
-        let connectId2 = str.slice(7, 9);
-        let component = hd.component`
-                            var sum, first, second;
-                            
-                            constraint {
-                                (first, second -> sum) => parseInt(first) + parseInt(second);
-                            }
-                        `;
-        system.addComponent(component);
-        system.update();
-        textBinder(td, component.vs.sum);
-        combiner(document.getElementById(connectId.toUpperCase()), component.vs.first);
-        combiner(document.getElementById(connectId2.toUpperCase()), component.vs.second);
-    } else if (str.slice(0, 4) === "div(") {
-        let connectId = str.slice(4, 6);
-        let connectId2 = str.slice(7, 9);
-        let component = hd.component`
-                            var quotient, divisor, dividend;
-                            
-                            constraint {
-                                (dividend, divisor -> quotient) => dividend/divisor;
-                            }
-                        `;
-        system.addComponent(component);
-        system.update();
-        textBinder(td, component.vs.quotient);
-        combiner(document.getElementById(connectId.toUpperCase()), component.vs.dividend);
-        combiner(document.getElementById(connectId2.toUpperCase()), component.vs.divisor);
-    } else {
-        td.innerText = str;
-    }
 }
 
 function createColums() {
@@ -98,7 +47,15 @@ function createCells() {
 
             //Parse input when changed
             input.addEventListener('change', () => {
-                parseStr(input.value, td);
+                if (input.value[0] === "=") {
+                    let ast = parse(lex(input.value.slice(1)));
+                    if (ast.type === Field) {
+                        bindConstraint(ast.val, td);
+                    } else {
+                        evaluate(ast, td);
+                    }
+                } else
+                    td.innerText = input.value;
                 input.type = "hidden";
                 td.appendChild(input);
             })
