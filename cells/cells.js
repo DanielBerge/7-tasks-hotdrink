@@ -1,5 +1,8 @@
 let system = new hd.ConstraintSystem();
 
+const COLUMNS = 26;
+const ROWS = 100;
+
 function textBinder(element, value) {
     value.value.subscribe({
         next: val => {
@@ -73,7 +76,7 @@ function parseStr(str, td) {
 }
 
 function createColums() {
-    for (let i = -1; i < 10; i++) {
+    for (let i = -1; i < COLUMNS; i++) {
         let td = document.createElement('td');
         if (i >= 0) {
             td.innerText = String.fromCharCode(i + 65);
@@ -83,10 +86,10 @@ function createColums() {
 }
 
 function createCells() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < ROWS; i++) {
         let tr = document.createElement('tr');
         tr.innerText = i.toString();
-        for (let j = 0; j < 10; j++) {
+        for (let j = 0; j < COLUMNS; j++) {
             let input = document.createElement('input');
             input.className = "inputField";
             let td = document.createElement('td');
