@@ -1,6 +1,6 @@
 let system = new hd.ConstraintSystem();
 
-function binder(element, value) {
+function textBinder(element, value) {
     value.value.subscribe({
         next: val => {
             if (val.hasOwnProperty('value')) {
@@ -34,27 +34,38 @@ function parseStr(str, td) {
                         `;
             system.addComponent(component);
             system.update();
-            binder(td, component.vs.val);
+            textBinder(td, component.vs.val);
             combiner(document.getElementById(connectId.toUpperCase()), component.vs.binded);
         }
     } else if (str.slice(0, 4) === "sum(") {
-
-    } else if (str.slice(0, 4) === "div(") {
         let connectId = str.slice(4, 6);
         let connectId2 = str.slice(7, 9);
-        console.log(connectId);
-        console.log(connectId2);
         let component = hd.component`
-                            var val, divider, divisor;
+                            var sum, first, second;
                             
                             constraint {
-                                (divider, divisor -> val) => divisor/divider;
+                                (first, second -> sum) => parseInt(first) + parseInt(second);
                             }
                         `;
         system.addComponent(component);
         system.update();
-        binder(td, component.vs.val);
-        combiner(document.getElementById(connectId.toUpperCase()), component.vs.divider);
+        textBinder(td, component.vs.sum);
+        combiner(document.getElementById(connectId.toUpperCase()), component.vs.first);
+        combiner(document.getElementById(connectId2.toUpperCase()), component.vs.second);
+    } else if (str.slice(0, 4) === "div(") {
+        let connectId = str.slice(4, 6);
+        let connectId2 = str.slice(7, 9);
+        let component = hd.component`
+                            var quotient, divisor, dividend;
+                            
+                            constraint {
+                                (dividend, divisor -> quotient) => dividend/divisor;
+                            }
+                        `;
+        system.addComponent(component);
+        system.update();
+        textBinder(td, component.vs.quotient);
+        combiner(document.getElementById(connectId.toUpperCase()), component.vs.dividend);
         combiner(document.getElementById(connectId2.toUpperCase()), component.vs.divisor);
     } else {
         td.innerText = str;
@@ -80,8 +91,9 @@ function createCells() {
             input.className = "inputField";
             let td = document.createElement('td');
             td.id = String.fromCharCode(j + 65) + i;
-
             input.type = "hidden";
+
+            //Parse input when changed
             input.addEventListener('change', () => {
                 parseStr(input.value, td);
                 input.type = "hidden";
@@ -89,6 +101,7 @@ function createCells() {
             })
 
 
+            //Show input field on click
             td.addEventListener('click', () => {
                 let inputs = document.getElementsByClassName('inputField');
                 for (let input1 of inputs) {
@@ -107,5 +120,4 @@ function createCells() {
 window.onload = () => {
     createColums();
     createCells();
-
 }
