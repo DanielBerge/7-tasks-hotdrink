@@ -1,4 +1,4 @@
-import {addConstraint} from "./constraints.js";
+import {addConstraint, divConstraint, multConstraint} from "./constraints.js";
 
 export const Num = Symbol('num');
 export const Op = Symbol('op');
@@ -28,15 +28,21 @@ export const parse = tokens => {
     return parseExpr();
 };
 
-export function evaluate(ast, td)  {
-    const opAcMap = {
+export function evaluate(ast, td) {
+    const operators = {
         add: args => {
             addConstraint(args[0], args[1], td);
         },
+        div: args => {
+            divConstraint(args[0], args[1], td);
+        },
+        mult: args => {
+            multConstraint(args[0], args[1], td);
+        }
     };
 
     if (ast.type === Num || ast.type === Field) return ast.val;
-    return opAcMap[ast.val](ast.expr.map((value => evaluate(value, td))));
+    return operators[ast.val](ast.expr.map((value => evaluate(value, td))));
 }
 
 
