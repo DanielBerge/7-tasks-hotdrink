@@ -109,7 +109,6 @@ window.onload = () => {
         ctx.fill(obj.path);
         component.vs.circles.value.value[selectedCircleIndex] = obj;
 
-        // Upda
         updateCanvas();
     });
 }
