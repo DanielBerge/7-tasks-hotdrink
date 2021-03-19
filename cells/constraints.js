@@ -1,4 +1,5 @@
-import {combiner, textBinder} from "./cells.js";
+import {combiner} from "./cells.js";
+import {innerTextBinder} from "../packages/binders.js";
 
 let system = new hd.ConstraintSystem();
 
@@ -19,7 +20,7 @@ export function addConstraint(arg1, arg2, td) {
     system.update();
     chooseBinding(arg1, component.vs.first);
     chooseBinding(arg2, component.vs.second);
-    textBinder(td, component.vs.sum);
+    innerTextBinder(td, component.vs.sum);
 }
 
 export function divConstraint(arg1, arg2, td) {
