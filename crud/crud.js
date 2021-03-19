@@ -49,9 +49,11 @@ window.onload = () => {
 
     document.getElementById('update').addEventListener('click', () => {
         let name = document.getElementById('list').value;
-        delete names[names.indexOf(name)];
-        names.push(component.vs.changing.value.value);
-        syncList();
+        if (name !== "") {
+            delete names[names.indexOf(name)];
+            names.push(component.vs.changing.value.value);
+            syncList();
+        }
     })
 
     document.getElementById('delete').addEventListener('click', () => {
