@@ -4,16 +4,6 @@ import {bindConstraint} from "./constraints.js";
 const COLUMNS = 26;
 const ROWS = 100;
 
-export function textBinder(element, value) {
-    value.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                element.innerText = val.value;
-            }
-        }
-    })
-}
-
 export function combiner(element, value) {
     value.value.set(element.innerText);
     element.addEventListener('change', () => {
