@@ -43,8 +43,10 @@ window.onload = () => {
     syncList();
 
     document.getElementById('create').addEventListener('click', () => {
-        names.push(nameElement.value + ", " + surnameElement.value)
-        syncList();
+        if (nameElement.value !== "" && surnameElement.value !== "") {
+            names.push(nameElement.value + ", " + surnameElement.value)
+            syncList();
+        }
     })
 
     document.getElementById('update').addEventListener('click', () => {
