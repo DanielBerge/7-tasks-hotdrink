@@ -5,17 +5,17 @@ let system = new hd.ConstraintSystem();
 window.onload = () => {
     let component = hd.component`
     component state {
-        var one = "", two = "", twoDisabled, btnDisabled, flightType = "one";
+        var startDate = "", returnDate = "", returnDisabled, bookDisabled, flightType = "start";
         constraint {
-            twoIsSelected(flightType -> twoDisabled) => flightType == "one";
+            twoIsSelected(flightType -> returnDisabled) => flightType == "start";
         }
         constraint {
-            btnState(flightType, one, two -> btnDisabled) => {
-                if (flightType === "one" && one === "") {
+            btnState(flightType, startDate, returnDate -> bookDisabled) => {
+                if (flightType === "start" && startDate === "") {
                     return true;
-                } else if (flightType === "two" && (one === "" || two === "")) {
+                } else if (flightType === "return" && (startDate === "" || returnDate === "")) {
                     return true;
-                } else if (flightType === "two" && new Date(one).getTime() > new Date(two).getTime()) {
+                } else if (flightType === "return" && new Date(startDate).getTime() > new Date(returnDate).getTime()) {
                     return true;
                 }
                 return false;
@@ -27,9 +27,9 @@ window.onload = () => {
     system.addComponent(component);
     system.update();
 
-    valueBinder(document.getElementById("one"), component.vs.one);
-    valueBinder(document.getElementById("two"), component.vs.two);
-    disabledBinder(document.getElementById("two"), component.vs.twoDisabled);
-    disabledBinder(document.getElementById("book"), component.vs.btnDisabled);
+    valueBinder(document.getElementById("start"), component.vs.startDate);
+    valueBinder(document.getElementById("return"), component.vs.returnDate);
+    disabledBinder(document.getElementById("return"), component.vs.returnDisabled);
+    disabledBinder(document.getElementById("book"), component.vs.bookDisabled);
     valueBinder(document.getElementById("flightType"), component.vs.flightType);
 }
