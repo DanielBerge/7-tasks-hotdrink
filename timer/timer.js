@@ -1,17 +1,7 @@
-import {maxBinder, valueBinder} from "../packages/binders.js";
+import {innerTextBinder, maxBinder, valueBinder} from "../packages/binders.js";
 
 let system = new hd.ConstraintSystem();
 let start = Date.now();
-
-function textBinder(text, v) {
-    v.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                text.innerText = v.value.value + "s";
-            }
-        }
-    })
-}
 
 window.onload = () => {
     let component = hd.component`
@@ -38,7 +28,7 @@ window.onload = () => {
     maxBinder(document.getElementById('progress'), component.vs.maxProgress);
     valueBinder(document.getElementById('progress'), component.vs.duration);
     valueBinder(document.getElementById('duration'), component.vs.maxDuration);
-    textBinder(document.getElementById('textTimer'), component.vs.duration);
+    innerTextBinder(document.getElementById('textTimer'), component.vs.duration);
 
     document.getElementById('reset').addEventListener('click', () => {
         start = Date.now();

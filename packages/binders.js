@@ -36,3 +36,13 @@ export function maxBinder(element, max) {
         max.value.set(element.max);
     });
 }
+
+export function innerTextBinder(text, value) {
+    value.value.subscribe({
+        next: val => {
+            if (val.hasOwnProperty('value')) {
+                text.innerText = value.value.value;
+            }
+        }
+    })
+}
