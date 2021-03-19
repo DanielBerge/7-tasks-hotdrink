@@ -10,16 +10,11 @@ window.onload = () => {
             twoIsSelected(flightType -> returnDisabled) => flightType == "start";
         }
         constraint {
-            btnState(flightType, startDate, returnDate -> bookDisabled) => {
-                if (flightType === "start" && startDate === "") {
-                    return true;
-                } else if (flightType === "return" && (startDate === "" || returnDate === "")) {
-                    return true;
-                } else if (flightType === "return" && new Date(startDate).getTime() > new Date(returnDate).getTime()) {
-                    return true;
-                }
-                return false;
-            }
+            bookState(flightType, startDate, returnDate -> bookDisabled) =>
+                (flightType === "start" && startDate === "")
+                || (flightType === "return") 
+                && ((startDate === "" || returnDate === "")
+                    || (new Date(startDate).getTime() > new Date(returnDate).getTime()));
         }
     }
      `;
