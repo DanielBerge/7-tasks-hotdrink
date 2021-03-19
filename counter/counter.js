@@ -7,4 +7,3 @@ window.onload = () => {
         countElement.innerText = (++count).toString()
     });
 }
-
