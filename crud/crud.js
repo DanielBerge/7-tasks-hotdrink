@@ -13,7 +13,7 @@ let listElement = document.getElementById('list');
 let nameElement = document.getElementById('name');
 let surnameElement = document.getElementById('surname');
 
-export function changeValueBinder(element, value) {
+function changeValueBinder(element, value) {
     element.addEventListener('change', () => {
         value.value.set(element.value);
     });
