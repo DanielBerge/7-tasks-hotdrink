@@ -1,40 +1,26 @@
-export function valueBinder(element, value) {
+function binder(element, value, type) {
     value.value.subscribe({
         next: val => {
             if (val.hasOwnProperty('value')) {
-                element.value = val.value;
+                element[type] = val.value;
             }
         }
     });
     element.addEventListener('input', () => {
-        value.value.set(element.value);
+        value.value.set(element[type]);
     });
 }
 
-export function disabledBinder(element, disabled) {
-    disabled.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                element.disabled = val.value;
-            }
-        }
-    });
-    element.addEventListener('input', () => {
-        disabled.value.set(element.disabled);
-    });
+export function valueBinder(element, value) {
+    binder(element, value, "value");
 }
 
-export function maxBinder(element, max) {
-    max.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                element.max = val.value;
-            }
-        }
-    });
-    element.addEventListener('input', () => {
-        max.value.set(element.max);
-    });
+export function disabledBinder(element, value) {
+    binder(element, value, "disabled");
+}
+
+export function maxBinder(element, value) {
+    binder(element, value, "max");
 }
 
 export function innerTextBinder(text, value) {
