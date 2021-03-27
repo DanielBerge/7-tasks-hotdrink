@@ -50,6 +50,7 @@ window.onload = () => {
 
     canvas.addEventListener('click', event => {
         let any = false;
+        component.vs.history.value.set([]);
         component.vs.circles.value.value.forEach(circle => {
             if (ctx.isPointInPath(circle.path, event.offsetX, event.offsetY)) {
                 adjust.style.display = "block";
