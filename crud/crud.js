@@ -75,7 +75,7 @@ function syncList() {
     }
 
     for (const name of names) {
-        if (name?.includes(filterElement.value)) {
+        if (name?.toLowerCase().includes(filterElement.value.toLowerCase())) {
             let node = document.createElement('option');
             node.innerText = name;
             listElement.appendChild(node);
