@@ -48,7 +48,7 @@ function createCells() {
                 } else
                     td.innerText = input.value;
                 input.type = "hidden";
-                td.appendChild(input);
+                tr.insertBefore(input, td);
             })
 
 
@@ -59,6 +59,7 @@ function createCells() {
                     input1.type = "hidden";
                 }
                 input.type = "text";
+                input.focus();
             })
 
             td.appendChild(input);
