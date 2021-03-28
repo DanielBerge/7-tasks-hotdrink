@@ -1,4 +1,4 @@
-import {addConstraint, divConstraint, multConstraint} from "./constraints.js";
+import {addConstraint, divConstraint, multConstraint, sumConstraint} from "./constraints.js";
 
 export const Num = Symbol('num');
 export const Op = Symbol('op');
@@ -38,6 +38,9 @@ export function evaluate(ast, td) {
         },
         mult: args => {
             multConstraint(args[0], args[1], td);
+        },
+        sum: args => {
+            sumConstraint(args[0], args[1], td);
         }
     };
 

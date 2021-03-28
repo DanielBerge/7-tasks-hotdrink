@@ -66,3 +66,40 @@ export function bindConstraint(arg, td) {
     innerTextBinder(td, component.vs.val);
     combiner(document.getElementById(arg), component.vs.binded);
 }
+
+export async function sumConstraint(arg1, arg2, td) {
+    let component = hd.component`
+           var sum, vals = [];
+           
+           constraint {
+               (vals -> sum) => vals.reduce((next, curr) => next + curr);
+           }
+       `;
+    await system.addComponent(component);
+    await system.update();
+    let valIndex = 0;
+    for (let i = arg1.charCodeAt(0); i <= arg2.charCodeAt(0); i++) {
+        for (let j = parseInt(arg1[1]); j <= parseInt(arg2[1]); j++) {
+            let elem = document.getElementById(String.fromCharCode(i) + j);
+            sumBinder(elem, component.vs.vals, valIndex++);
+        }
+    }
+
+    innerTextBinder(td, component.vs.sum);
+}
+
+function sumBinder(element, value, index) {
+    function updateValue() {
+        let list = value.value.value;
+        list[index] = parseInt(element.innerText === "" ? "0" : element.innerText);
+        value.value.set(list);
+    }
+
+    updateValue();
+    element.addEventListener('change', () => {
+        updateValue();
+    });
+    element.addEventListener('DOMSubtreeModified', () => {
+        updateValue();
+    });
+}

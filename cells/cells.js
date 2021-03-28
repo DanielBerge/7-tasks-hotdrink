@@ -3,6 +3,7 @@ import {bindConstraint} from "./constraints.js";
 
 const COLUMNS = 26;
 const ROWS = 100;
+const START_CHAR = 65;
 
 export function combiner(element, value) {
     value.value.set(element.innerText);
@@ -18,7 +19,7 @@ function createColums() {
     for (let i = -1; i < COLUMNS; i++) {
         let td = document.createElement('td');
         if (i >= 0) {
-            td.innerText = String.fromCharCode(i + 65);
+            td.innerText = String.fromCharCode(i + START_CHAR);
         }
         document.getElementById('thead').appendChild(td);
     }
@@ -32,7 +33,7 @@ function createCells() {
             let input = document.createElement('input');
             input.className = "inputField";
             let td = document.createElement('td');
-            td.id = String.fromCharCode(j + 65) + i;
+            td.id = String.fromCharCode(j + START_CHAR) + i;
             input.type = "hidden";
 
             //Parse input when changed
