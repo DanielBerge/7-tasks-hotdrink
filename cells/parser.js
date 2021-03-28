@@ -6,7 +6,6 @@ export const Field = Symbol('field')
 
 export const lex = str => str.split(' ').map(s => s.trim());
 
-//Credit https://github.com/mgechev/tiny-compiler/blob/master/tiny.js
 export const parse = tokens => {
 
     let c = 0;
