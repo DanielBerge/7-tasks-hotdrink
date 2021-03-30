@@ -4,4 +4,4 @@
 
 ## How to run
 * `python3 -m http.server 8080`
-* Open localhost:8080 in browser
+* Open **localhost:8080** in browser
