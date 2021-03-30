@@ -1,10 +1,35 @@
-import {combiner} from "./cells.js";
 import {innerTextBinder} from "../packages/binders.js";
 
 let system = new hd.ConstraintSystem();
 
 function chooseBinding(arg, variable) {
     Number.isInteger(arg) ? variable.value.set(arg) : combiner(document.getElementById(arg), variable);
+}
+
+function sumBinder(element, value, index) {
+    function updateValue() {
+        let list = value.value.value;
+        list[index] = parseInt(element.innerText === "" ? "0" : element.innerText);
+        value.value.set(list);
+    }
+
+    updateValue();
+    element.addEventListener('change', () => {
+        updateValue();
+    });
+    element.addEventListener('DOMSubtreeModified', () => {
+        updateValue();
+    });
+}
+
+function combiner(element, value) {
+    value.value.set(element.innerText);
+    element.addEventListener('change', () => {
+        value.value.set(element.innerText);
+    });
+    element.addEventListener('DOMSubtreeModified', () => {
+        value.value.set(element.innerText);
+    });
 }
 
 export function addConstraint(arg1, arg2, td) {
@@ -86,20 +111,4 @@ export async function sumConstraint(arg1, arg2, td) {
     }
 
     innerTextBinder(td, component.vs.sum);
-}
-
-function sumBinder(element, value, index) {
-    function updateValue() {
-        let list = value.value.value;
-        list[index] = parseInt(element.innerText === "" ? "0" : element.innerText);
-        value.value.set(list);
-    }
-
-    updateValue();
-    element.addEventListener('change', () => {
-        updateValue();
-    });
-    element.addEventListener('DOMSubtreeModified', () => {
-        updateValue();
-    });
 }

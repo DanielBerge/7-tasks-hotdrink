@@ -5,16 +5,6 @@ const COLUMNS = 26;
 const ROWS = 100;
 const START_CHAR = 65;
 
-export function combiner(element, value) {
-    value.value.set(element.innerText);
-    element.addEventListener('change', () => {
-        value.value.set(element.innerText);
-    });
-    element.addEventListener('DOMSubtreeModified', () => {
-        value.value.set(element.innerText);
-    });
-}
-
 function createColums() {
     for (let i = -1; i < COLUMNS; i++) {
         let td = document.createElement('td');
