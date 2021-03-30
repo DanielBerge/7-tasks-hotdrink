@@ -7,3 +7,4 @@ https://blog.mgechev.com/2017/09/16/developing-simple-interpreter-transpiler-com
 ### Known issues
 * Sum only works with references 0-9
 * Sum might give error if both references are the same char
+* Referencing same cell, crashes browser
