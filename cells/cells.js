@@ -26,37 +26,37 @@ function createCells() {
             td.id = String.fromCharCode(j + START_CHAR) + i;
             input.type = "hidden";
 
-            //Parse input when changed
-            input.addEventListener('change', () => {
-                if (input.value[0] === "=") {
-                    let ast = parse(lex(input.value.slice(1)));
-                    if (ast.type === Field) {
-                        bindConstraint(ast.val, td);
-                    } else {
-                        evaluate(ast, td);
-                    }
-                } else
-                    td.innerText = input.value;
-                input.type = "hidden";
-                tr.insertBefore(input, td);
-            })
-
-
-            //Show input field on click
-            td.addEventListener('click', () => {
-                let inputs = document.getElementsByClassName('inputField');
-                for (let input1 of inputs) {
-                    input1.type = "hidden";
-                }
-                input.type = "text";
-                input.focus();
-            })
+            input.addEventListener('change', () => parseInput(tr, td, input));
+            td.addEventListener('click', () => toggleInput(input));
 
             td.appendChild(input);
             tr.appendChild(td);
         }
         document.getElementById('tbody').appendChild(tr);
     }
+}
+
+function toggleInput(input) {
+    let inputs = document.getElementsByClassName('inputField');
+    for (let input1 of inputs) {
+        input1.type = "hidden";
+    }
+    input.type = "text";
+    input.focus();
+}
+
+function parseInput(tr, td, input) {
+    if (input.value[0] === "=") {
+        let ast = parse(lex(input.value.slice(1)));
+        if (ast.type === Field) {
+            bindConstraint(ast.val, td);
+        } else {
+            evaluate(ast, td);
+        }
+    } else
+        td.innerText = input.value;
+    input.type = "hidden";
+    tr.insertBefore(input, td);
 }
 
 window.onload = () => {
