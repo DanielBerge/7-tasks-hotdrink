@@ -110,6 +110,7 @@ window.onload = () => {
         ctx.fill(obj.path);
         component.vs.circles.value.value[selectedCircleIndex] = obj;
 
+        //TODO add schedulecommand
         updateCanvas();
     });
 }
