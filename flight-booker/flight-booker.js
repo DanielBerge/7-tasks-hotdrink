@@ -5,14 +5,14 @@ let system = new hd.ConstraintSystem();
 window.onload = () => {
     let component = hd.component`
     component state {
-        var startDate = "", returnDate = "", returnDisabled, bookDisabled, flightType = "start";
+        var startDate = "", returnDate = "", returnDisabled, bookDisabled, flightType = "oneway";
         constraint {
-            twoIsSelected(flightType -> returnDisabled) => flightType == "start";
+            (flightType -> returnDisabled) => flightType == "oneway";
         }
         constraint {
-            bookState(flightType, startDate, returnDate -> bookDisabled) =>
-                (flightType === "start" && startDate === "")
-                || (flightType === "return") 
+            (flightType, startDate, returnDate -> bookDisabled) =>
+                (flightType === "oneway" && startDate === "")
+                || (flightType === "twoway") 
                 && ((startDate === "" || returnDate === "")
                     || (new Date(startDate).getTime() > new Date(returnDate).getTime()));
         }
