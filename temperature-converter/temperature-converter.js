@@ -5,7 +5,7 @@ let system = new hd.ConstraintSystem();
 window.onload = () => {
     let component = hd.component`
      var celcius, fahrenheit;
-     constraint TemperatureConverter {
+     constraint {
        (celcius -> fahrenheit) => celcius * (9/5) + 32;
        (fahrenheit -> celcius) => (fahrenheit - 32) * (5/9);
      }
