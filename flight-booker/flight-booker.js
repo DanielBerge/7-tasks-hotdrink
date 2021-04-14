@@ -10,11 +10,19 @@ window.onload = () => {
             (flightType -> returnDisabled) => flightType == "oneway";
         }
         constraint {
-            (flightType, startDate, returnDate -> bookDisabled) =>
-                (flightType === "oneway" && startDate === "")
-                || (flightType === "twoway") 
-                && ((startDate === "" || returnDate === "")
-                    || (new Date(startDate).getTime() > new Date(returnDate).getTime()));
+            (flightType, startDate, returnDate -> bookDisabled) => {
+              if (flightType === "oneway" && startDate === "") {
+                  return true;
+              } 
+              if (flightType === "twoway" && (startDate === "" || returnDate === "")) {
+                  return true;
+              } 
+              if (flightType === "twoway" && new Date(startDate).getTime() > new Date(returnDate).getTime()) {
+                  return true;
+              }
+              return false;
+            }
+
         }
     }
      `;
