@@ -24,7 +24,6 @@ window.onload = () => {
                }
               return false;
             }
-
         }
     }
      `;
@@ -37,4 +36,8 @@ window.onload = () => {
     disabledBinder(document.getElementById("return"), component.vs.returnDisabled);
     disabledBinder(document.getElementById("book"), component.vs.bookDisabled);
     valueBinder(document.getElementById("flightType"), component.vs.flightType);
+
+    document.getElementById("book").addEventListener('click', () => {
+        alert(`You have booked ${component.vs.flightType.value.value} flight on ${component.vs.startDate.value.value} ${component.vs.returnDate.value.value}`)
+    })
 }
