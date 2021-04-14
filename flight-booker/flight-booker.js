@@ -15,7 +15,7 @@ window.onload = () => {
                   return startDate === "";
               } 
               if (flightType === "twoway") {
-                 if ((startDate === "" || returnDate === "")) {
+                 if (startDate === "" || returnDate === "") {
                      return true;
                  } 
                  if (new Date(startDate).getTime() > new Date(returnDate).getTime()) {
