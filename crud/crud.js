@@ -2,12 +2,6 @@ import {valueBinder} from "../packages/binders.js";
 
 let system = new hd.ConstraintSystem();
 
-let names = [
-    "Emil, Hans",
-    "Mustermann, Max",
-    "Tich, Roman"
-]
-
 let filterElement = document.getElementById('filter');
 let listElement = document.getElementById('list');
 let nameElement = document.getElementById('name');
@@ -19,9 +13,29 @@ function changeValueBinder(element, value) {
     });
 }
 
-window.onload = () => {
+function listBinder(element, value) {
+    value.value.subscribe({
+        next: val => {
+            if (val.hasOwnProperty('value')) {
+                console.log(value.value.value);
+                while (element.hasChildNodes()) {
+                    element.childNodes[0].remove();
+                }
+                for (const name of value.value.value) {
+                    let node = document.createElement('option');
+                    node.innerText = name;
+                    element.appendChild(node);
+                }
+            }
+        }
+    });
+}
+
+window.onload = async () => {
     let component = hd.component`
-        var changing = ", ", name, surname;
+        var names = ["Emil, Hans", "Mustermann, Max", "Tich, Roman"];
+        var changing = ", ", name, surname, filtered = [], filter = "";
+        var add = "", remove = "";
         
         constraint {
             (changing -> name, surname) => {
@@ -32,53 +46,41 @@ window.onload = () => {
                 return name + ", " + surname;
             }
         }
+        
+        constraint {
+            (filter, names -> filtered) => names.filter((value) => value.toLowerCase().includes(filter.toLowerCase()));
+        }
     `;
 
-    system.addComponent(component);
+    await system.addComponent(component);
     system.update();
-
     changeValueBinder(document.getElementById('list'), component.vs.changing);
     valueBinder(nameElement, component.vs.name);
     valueBinder(surnameElement, component.vs.surname);
-    syncList();
+    valueBinder(filterElement, component.vs.filter);
+    listBinder(listElement, component.vs.filtered);
 
     document.getElementById('create').addEventListener('click', () => {
         if (nameElement.value !== "" && surnameElement.value !== "") {
-            names.push(nameElement.value + ", " + surnameElement.value)
-            syncList();
+            let copy = component.vs.names.value.value;
+            copy.push(nameElement.value + ", " + surnameElement.value);
+            component.vs.names.value.set(copy);
         }
     })
 
     document.getElementById('update').addEventListener('click', () => {
         let name = document.getElementById('list').value;
         if (name !== "") {
-            delete names[names.indexOf(name)];
-            names.push(component.vs.changing.value.value);
-            syncList();
+            let copy = component.vs.names.value.value;
+            copy[copy.indexOf(name)] = component.vs.changing.value.value;
+            component.vs.names.value.set(copy);
         }
     })
 
     document.getElementById('delete').addEventListener('click', () => {
         let name = nameElement.value + ", " + surnameElement.value;
-        delete names[names.indexOf(name)];
-        syncList();
+        let copy = component.vs.names.value.value;
+        delete copy[copy.indexOf(name)];
+        component.vs.names.value.set(copy);
     })
-
-    filterElement.addEventListener('input', () => {
-        syncList();
-    })
-}
-
-function syncList() {
-    while (listElement.hasChildNodes()) {
-        listElement.childNodes[0].remove();
-    }
-
-    for (const name of names) {
-        if (name?.toLowerCase().includes(filterElement.value.toLowerCase())) {
-            let node = document.createElement('option');
-            node.innerText = name;
-            listElement.appendChild(node);
-        }
-    }
 }
