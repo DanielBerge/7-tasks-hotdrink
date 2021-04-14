@@ -7,30 +7,6 @@ let listElement = document.getElementById('list');
 let nameElement = document.getElementById('name');
 let surnameElement = document.getElementById('surname');
 
-function changeValueBinder(element, value) {
-    element.addEventListener('change', () => {
-        value.value.set(element.value);
-    });
-}
-
-function listBinder(element, value) {
-    value.value.subscribe({
-        next: val => {
-            if (val.hasOwnProperty('value')) {
-                console.log(value.value.value);
-                while (element.hasChildNodes()) {
-                    element.childNodes[0].remove();
-                }
-                for (const name of value.value.value) {
-                    let node = document.createElement('option');
-                    node.innerText = name;
-                    element.appendChild(node);
-                }
-            }
-        }
-    });
-}
-
 window.onload = async () => {
     let component = hd.component`
         var names = ["Emil, Hans", "Mustermann, Max", "Tich, Roman"];
@@ -83,4 +59,26 @@ window.onload = async () => {
         delete copy[copy.indexOf(name)];
         component.vs.names.value.set(copy);
     })
+}
+function changeValueBinder(element, value) {
+    element.addEventListener('change', () => {
+        value.value.set(element.value);
+    });
+}
+
+function listBinder(element, value) {
+    value.value.subscribe({
+        next: val => {
+            if (val.hasOwnProperty('value')) {
+                while (element.hasChildNodes()) {
+                    element.childNodes[0].remove();
+                }
+                for (const name of value.value.value) {
+                    let node = document.createElement('option');
+                    node.innerText = name;
+                    element.appendChild(node);
+                }
+            }
+        }
+    });
 }
