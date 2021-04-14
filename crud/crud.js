@@ -35,7 +35,6 @@ window.onload = async () => {
     let component = hd.component`
         var names = ["Emil, Hans", "Mustermann, Max", "Tich, Roman"];
         var changing = ", ", name, surname, filtered = [], filter = "";
-        var add = "", remove = "";
         
         constraint {
             (changing -> name, surname) => {
@@ -54,7 +53,8 @@ window.onload = async () => {
 
     await system.addComponent(component);
     system.update();
-    changeValueBinder(document.getElementById('list'), component.vs.changing);
+
+    changeValueBinder(listElement, component.vs.changing);
     valueBinder(nameElement, component.vs.name);
     valueBinder(surnameElement, component.vs.surname);
     valueBinder(filterElement, component.vs.filter);
@@ -69,7 +69,7 @@ window.onload = async () => {
     })
 
     document.getElementById('update').addEventListener('click', () => {
-        let name = document.getElementById('list').value;
+        let name = listElement.value;
         if (name !== "") {
             let copy = component.vs.names.value.value;
             copy[copy.indexOf(name)] = component.vs.changing.value.value;
