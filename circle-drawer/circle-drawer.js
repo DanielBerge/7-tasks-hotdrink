@@ -14,6 +14,7 @@ let redo = document.getElementById('redo');
 window.onload = () => {
     let component = hd.component`
         var circles = [], history = [], undoDisabled = true, redoDisabled = true;
+        var mouseX, mouseY;
         
         constraint {
             (circles -> undoDisabled) => circles.length === 0;
@@ -29,28 +30,23 @@ window.onload = () => {
     disabledBinder(undo, component.vs.undoDisabled);
     disabledBinder(redo, component.vs.redoDisabled);
 
-    function updateCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        component.vs.circles.value.value.forEach(circle => {
-            ctx.fill(circle.path);
-        });
+    function history(undo) {
+        let cCopy = component.vs.circles.value.value;
+        let hCopy = component.vs.history.value.value;
+        if (undo) {
+            hCopy.push(cCopy.pop());
+        } else {
+            cCopy.push(hCopy.pop());
+        }
+        component.vs.circles.value.set(cCopy);
+        component.vs.history.value.set(hCopy);
     }
 
-    undo.addEventListener('click', () => {
-        component.vs.history.value.value.push(component.vs.circles.value.value.pop());
-        system.update();
-        updateCanvas();
-    })
-
-    redo.addEventListener('click', () => {
-        component.vs.circles.value.value.push(component.vs.history.value.value.pop());
-        system.update();
-        updateCanvas();
-    })
+    undo.addEventListener('click', () => history(true));
+    redo.addEventListener('click', () => history(false));
 
     canvas.addEventListener('click', event => {
         let any = false;
-        component.vs.history.value.set([]);
         component.vs.circles.value.value.forEach(circle => {
             if (ctx.isPointInPath(circle.path, event.offsetX, event.offsetY)) {
                 adjust.style.display = "block";
@@ -64,53 +60,64 @@ window.onload = () => {
         if (!any) {
             let path = new Path2D();
             path.arc(event.x - 10, event.y - 100, 40, 0, 2 * Math.PI);
-            ctx.fillStyle = 'grey';
-            ctx.fill(path);
-            component.vs.circles.value.value.push({
+            let copy = component.vs.circles.value.value;
+            copy.push({
                 x: event.x - 10,
                 y: event.y - 100,
                 radius: 40,
                 path: path,
             })
-            system.update();
+            component.vs.circles.value.set(copy)
+            component.vs.history.value.set([]);
         }
     })
 
-    canvas.addEventListener('mousemove', function (event) {
+    function tick() {
+        console.log("tick");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         component.vs.circles.value.value.forEach(circle => {
-            if (ctx.isPointInPath(circle.path, event.offsetX, event.offsetY)) {
+            if (ctx.isPointInPath(circle.path, component.vs.mouseX.value.value, component.vs.mouseY.value.value)) {
                 ctx.fillStyle = 'green';
             } else {
                 ctx.fillStyle = 'grey';
             }
             ctx.fill(circle.path);
-        })
+        });
+        window.requestAnimationFrame(tick);
+    }
+
+    window.requestAnimationFrame(tick);
+
+    canvas.addEventListener('mousemove', function (event) {
+        component.vs.mouseX.value.set(event.offsetX);
+        component.vs.mouseY.value.set(event.offsetY);
     });
 
-    // When the user clicks on <span> (x), close the modal
-    let span = document.getElementsByClassName("close")[0];
-    span.onclick = function () {
-        adjust.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target === adjust) {
-            adjust.style.display = "none";
-        }
-    }
 
     slider.addEventListener('input', () => {
-        let obj = component.vs.circles.value.value[selectedCircleIndex];
+        let copy = component.vs.circles.value.value;
+        let obj = copy[selectedCircleIndex];
         obj.radius = slider.value;
+
         let newPath = new Path2D();
         newPath.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
         obj.path = newPath;
-        ctx.fillStyle = 'grey';
-        ctx.fill(obj.path);
-        component.vs.circles.value.value[selectedCircleIndex] = obj;
 
+        copy[selectedCircleIndex] = obj;
+        component.vs.circles.value.set(copy);
         //TODO add schedulecommand
-        updateCanvas();
     });
+}
+
+// When the user clicks on <span> (x), close the modal
+let span = document.getElementsByClassName("close")[0];
+span.onclick = function () {
+    adjust.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+    if (event.target === adjust) {
+        adjust.style.display = "none";
+    }
 }
