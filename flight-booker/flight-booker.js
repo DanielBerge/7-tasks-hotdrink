@@ -3,11 +3,12 @@ import {disabledBinder, valueBinder} from "../packages/binders.js";
 let system = new hd.ConstraintSystem();
 
 window.onload = () => {
+    // language=textmate
     let component = hd.component`
-    component state {
+    component {
         var startDate = "", returnDate = "", returnDisabled, bookDisabled, flightType = "oneway";
         constraint {
-            (flightType -> returnDisabled) => flightType == "oneway";
+            (flightType -> returnDisabled) => flightType === "oneway";
         }
         constraint {
             (flightType, startDate, returnDate -> bookDisabled) => {
