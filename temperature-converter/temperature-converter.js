@@ -1,19 +1,12 @@
 import {valueBinder} from "../packages/binders.js";
+import {comp} from "./comp.hd.js";
 
 let system = new hd.ConstraintSystem();
 
 window.onload = () => {
-    let component = hd.component`
-     var celcius, fahrenheit;
-     constraint {
-       (celcius -> fahrenheit) => celcius * (9/5) + 32;
-       (fahrenheit -> celcius) => (fahrenheit - 32) * (5/9);
-     }
-     `;
-
-    system.addComponent(component);
+    system.addComponent(comp);
     system.update();
 
-    valueBinder(document.getElementById("celcius"), component.vs.celcius);
-    valueBinder(document.getElementById("fahrenheit"), component.vs.fahrenheit);
+    valueBinder(document.getElementById("celcius"), comp.vs.celcius);
+    valueBinder(document.getElementById("fahrenheit"), comp.vs.fahrenheit);
 }
