@@ -5,34 +5,32 @@ let system = new hd.ConstraintSystem();
 const canvas = document.getElementById('canvas');
 
 let selectedCircleIndex;
-
+let ctx = () => comp.vs.ctx.value.value;
+let circles = () => comp.vs.circles.value.value;
 
 let adjust = document.getElementById("adjust");
 let slider = document.getElementById("slider");
 let undo = document.getElementById('undo');
 let redo = document.getElementById('redo');
 
+function history(undo) {
+    let cCopy = comp.vs.circles.value.value;
+    let hCopy = comp.vs.history.value.value;
+    if (undo) {
+        hCopy.push(cCopy.pop());
+    } else {
+        cCopy.push(hCopy.pop());
+    }
+    comp.vs.circles.value.set(cCopy);
+    comp.vs.history.value.set(hCopy);
+}
+
 window.onload = () => {
     system.addComponent(comp);
     system.update();
 
-    let ctx = () => comp.vs.ctx.value.value;
-    let circles = () => comp.vs.circles.value.value;
-
     disabledBinder(undo, comp.vs.undoDisabled);
     disabledBinder(redo, comp.vs.redoDisabled);
-
-    function history(undo) {
-        let cCopy = comp.vs.circles.value.value;
-        let hCopy = comp.vs.history.value.value;
-        if (undo) {
-            hCopy.push(cCopy.pop());
-        } else {
-            cCopy.push(hCopy.pop());
-        }
-        comp.vs.circles.value.set(cCopy);
-        comp.vs.history.value.set(hCopy);
-    }
 
     undo.addEventListener('click', () => history(true));
     redo.addEventListener('click', () => history(false));
@@ -40,7 +38,7 @@ window.onload = () => {
     canvas.addEventListener('click', event => {
         let any = false;
         circles().forEach(circle => {
-            if (ctx().isPointInPath(circle.path, event.offsetX, event.offsetY)) {
+            if (ctx().isPointInPath(circle.path, comp.vs.mouseX.value.value, comp.vs.mouseY.value.value)) {
                 adjust.style.display = "block";
                 adjust.style.top = circle.y + "px";
                 adjust.style.left = circle.x + "px";
@@ -48,7 +46,7 @@ window.onload = () => {
                 selectedCircleIndex = circles().indexOf(circle);
                 any = true;
             }
-        })
+        });
         if (!any) {
             let path = new Path2D();
             path.arc(event.x - 10, event.y - 100, 40, 0, 2 * Math.PI);
