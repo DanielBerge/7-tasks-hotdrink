@@ -1,4 +1,5 @@
 import {valueBinder} from "../packages/binders.js";
+import {comp} from "./comp.hd.js"
 
 let system = new hd.ConstraintSystem();
 
@@ -8,56 +9,38 @@ let nameElement = document.getElementById('name');
 let surnameElement = document.getElementById('surname');
 
 window.onload = async () => {
-    let component = hd.component`
-        var names = ["Emil, Hans", "Mustermann, Max", "Tich, Roman"];
-        var changing = ", ", name, surname, filtered = [], filter = "";
-        
-        constraint {
-            (changing -> name, surname) => {
-                let split = changing.split(', ');
-                return [split[0], split[1]];
-            }
-            (name, surname -> changing) => {
-                return name + ", " + surname;
-            }
-        }
-        
-        constraint {
-            (filter, names -> filtered) => names.filter((value) => value.toLowerCase().includes(filter.toLowerCase()));
-        }
-    `;
 
-    await system.addComponent(component);
+    await system.addComponent(comp);
     system.update();
 
-    changeValueBinder(listElement, component.vs.changing);
-    valueBinder(nameElement, component.vs.name);
-    valueBinder(surnameElement, component.vs.surname);
-    valueBinder(filterElement, component.vs.filter);
-    listBinder(listElement, component.vs.filtered);
+    changeValueBinder(listElement, comp.vs.changing);
+    valueBinder(nameElement, comp.vs.name);
+    valueBinder(surnameElement, comp.vs.surname);
+    valueBinder(filterElement, comp.vs.filter);
+    listBinder(listElement, comp.vs.filtered);
 
     document.getElementById('create').addEventListener('click', () => {
         if (nameElement.value !== "" && surnameElement.value !== "") {
-            let copy = component.vs.names.value.value;
+            let copy = comp.vs.names.value.value;
             copy.push(nameElement.value + ", " + surnameElement.value);
-            component.vs.names.value.set(copy);
+            comp.vs.names.value.set(copy);
         }
     })
 
     document.getElementById('update').addEventListener('click', () => {
         let name = listElement.value;
         if (name !== "") {
-            let copy = component.vs.names.value.value;
-            copy[copy.indexOf(name)] = component.vs.changing.value.value;
-            component.vs.names.value.set(copy);
+            let copy = comp.vs.names.value.value;
+            copy[copy.indexOf(name)] = comp.vs.changing.value.value;
+            comp.vs.names.value.set(copy);
         }
     })
 
     document.getElementById('delete').addEventListener('click', () => {
         let name = nameElement.value + ", " + surnameElement.value;
-        let copy = component.vs.names.value.value;
+        let copy = comp.vs.names.value.value;
         delete copy[copy.indexOf(name)];
-        component.vs.names.value.set(copy);
+        comp.vs.names.value.set(copy);
     })
 }
 function changeValueBinder(element, value) {

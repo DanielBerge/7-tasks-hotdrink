@@ -5,4 +5,4 @@ export const comp = hd.component`
        (celcius -> fahrenheit) => celcius * (9/5) + 32;
        (fahrenheit -> celcius) => (fahrenheit - 32) * (5/9);
      }
-     `;
+`;
