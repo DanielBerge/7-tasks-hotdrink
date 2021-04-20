@@ -17,7 +17,7 @@ let undo = document.getElementById('undo');
 let redo = document.getElementById('redo');
 
 function history(undo) {
-    let cCopy = comp.vs.circles.value.value;
+    let cCopy = circles();
     let hCopy = comp.vs.history.value.value;
     if (undo) {
         let pop = cCopy.pop();
