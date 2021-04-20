@@ -36,7 +36,6 @@ function history(undo) {
 }
 
 function tick() {
-    console.log("tick");
     ctx().clearRect(0, 0, canvas.width, canvas.height);
     circles().forEach(circle => {
         if (circle.visible) {
@@ -70,9 +69,11 @@ window.onload = () => {
         let any = false;
         circles().forEach(circle => {
             if (ctx().isPointInPath(circle.path, comp.vs.mouseX.value.value, comp.vs.mouseY.value.value) && circle.visible) {
+                // Placement of modal
                 adjust.style.display = "block";
                 adjust.style.top = circle.y + "px";
                 adjust.style.left = circle.x + "px";
+
                 slider.value = circle.radius;
                 selectedCircleIndex = circles().indexOf(circle);
                 any = true;
@@ -144,6 +145,7 @@ function saveSlide() {
 
     copy[selectedCircleIndex] = obj;
     comp.vs.circles.value.set(copy);
+    comp.vs.history.value.set([]);
 }
 
 // When the user clicks on <span> (x), close the modal
