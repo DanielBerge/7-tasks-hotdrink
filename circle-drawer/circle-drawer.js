@@ -3,9 +3,10 @@ import {comp} from "./comp.hd.js";
 
 let system = new hd.ConstraintSystem();
 const canvas = document.getElementById('canvas');
+let ctx = canvas.getContext('2d');
 
 let selectedCircleIndex;
-let ctx = () => comp.vs.ctx.value.value;
+let mouseX, mouseY;
 let circles = () => comp.vs.circles.value.value;
 
 let dummy;
@@ -36,20 +37,20 @@ function history(undo) {
 }
 
 function tick() {
-    ctx().clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     circles().forEach(circle => {
         if (circle.visible) {
-            if (ctx().isPointInPath(circle.path, comp.vs.mouseX.value.value, comp.vs.mouseY.value.value)) {
-                ctx().fillStyle = 'green';
+            if (ctx.isPointInPath(circle.path, mouseX, mouseY)) {
+                ctx.fillStyle = 'green';
             } else {
-                ctx().fillStyle = 'grey';
+                ctx.fillStyle = 'grey';
             }
-            ctx().fill(circle.path);
+            ctx.fill(circle.path);
         }
     });
     if (dummy) {
-        ctx().fillStyle = 'grey';
-        ctx().fill(dummy.path);
+        ctx.fillStyle = 'grey';
+        ctx.fill(dummy.path);
     }
     window.requestAnimationFrame(tick);
 }
@@ -68,7 +69,7 @@ window.onload = () => {
     canvas.addEventListener('click', event => {
         let any = false;
         circles().forEach(circle => {
-            if (ctx().isPointInPath(circle.path, comp.vs.mouseX.value.value, comp.vs.mouseY.value.value) && circle.visible) {
+            if (ctx.isPointInPath(circle.path, mouseX, mouseY) && circle.visible) {
                 // Placement of modal
                 adjust.style.display = "block";
                 adjust.style.top = circle.y + "px";
@@ -97,8 +98,8 @@ window.onload = () => {
 
 
     canvas.addEventListener('mousemove', function (event) {
-        comp.vs.mouseX.value.set(event.offsetX);
-        comp.vs.mouseY.value.set(event.offsetY);
+        mouseX = event.offsetX;
+        mouseY = event.offsetY;
     });
 
 
