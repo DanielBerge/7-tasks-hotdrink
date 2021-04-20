@@ -1,10 +1,11 @@
 import {disabledBinder} from "../packages/binders.js";
+import {comp} from "./comp.hd.js";
 
 let system = new hd.ConstraintSystem();
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
 
 let selectedCircleIndex;
+
 
 let adjust = document.getElementById("adjust");
 let slider = document.getElementById("slider");
@@ -12,34 +13,25 @@ let undo = document.getElementById('undo');
 let redo = document.getElementById('redo');
 
 window.onload = () => {
-    let component = hd.component`
-        var circles = [], history = [], undoDisabled = true, redoDisabled = true;
-        var mouseX, mouseY;
-        
-        constraint {
-            (circles -> undoDisabled) => circles.length === 0;
-        }
-        constraint {
-            (history -> redoDisabled) => history.length === 0;
-        }
-    `;
-
-    system.addComponent(component);
+    system.addComponent(comp);
     system.update();
 
-    disabledBinder(undo, component.vs.undoDisabled);
-    disabledBinder(redo, component.vs.redoDisabled);
+    let ctx = () => comp.vs.ctx.value.value;
+    let circles = () => comp.vs.circles.value.value;
+
+    disabledBinder(undo, comp.vs.undoDisabled);
+    disabledBinder(redo, comp.vs.redoDisabled);
 
     function history(undo) {
-        let cCopy = component.vs.circles.value.value;
-        let hCopy = component.vs.history.value.value;
+        let cCopy = comp.vs.circles.value.value;
+        let hCopy = comp.vs.history.value.value;
         if (undo) {
             hCopy.push(cCopy.pop());
         } else {
             cCopy.push(hCopy.pop());
         }
-        component.vs.circles.value.set(cCopy);
-        component.vs.history.value.set(hCopy);
+        comp.vs.circles.value.set(cCopy);
+        comp.vs.history.value.set(hCopy);
     }
 
     undo.addEventListener('click', () => history(true));
@@ -47,41 +39,41 @@ window.onload = () => {
 
     canvas.addEventListener('click', event => {
         let any = false;
-        component.vs.circles.value.value.forEach(circle => {
-            if (ctx.isPointInPath(circle.path, event.offsetX, event.offsetY)) {
+        circles().forEach(circle => {
+            if (ctx().isPointInPath(circle.path, event.offsetX, event.offsetY)) {
                 adjust.style.display = "block";
                 adjust.style.top = circle.y + "px";
                 adjust.style.left = circle.x + "px";
                 slider.value = circle.radius;
-                selectedCircleIndex = component.vs.circles.value.value.indexOf(circle);
+                selectedCircleIndex = circles().indexOf(circle);
                 any = true;
             }
         })
         if (!any) {
             let path = new Path2D();
             path.arc(event.x - 10, event.y - 100, 40, 0, 2 * Math.PI);
-            let copy = component.vs.circles.value.value;
+            let copy = circles();
             copy.push({
                 x: event.x - 10,
                 y: event.y - 100,
                 radius: 40,
                 path: path,
             })
-            component.vs.circles.value.set(copy)
-            component.vs.history.value.set([]);
+            comp.vs.circles.value.set(copy)
+            comp.vs.history.value.set([]);
         }
     })
 
     function tick() {
         console.log("tick");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        component.vs.circles.value.value.forEach(circle => {
-            if (ctx.isPointInPath(circle.path, component.vs.mouseX.value.value, component.vs.mouseY.value.value)) {
-                ctx.fillStyle = 'green';
+        ctx().clearRect(0, 0, canvas.width, canvas.height);
+        circles().forEach(circle => {
+            if (ctx().isPointInPath(circle.path, comp.vs.mouseX.value.value, comp.vs.mouseY.value.value)) {
+                ctx().fillStyle = 'green';
             } else {
-                ctx.fillStyle = 'grey';
+                ctx().fillStyle = 'grey';
             }
-            ctx.fill(circle.path);
+            ctx().fill(circle.path);
         });
         window.requestAnimationFrame(tick);
     }
@@ -89,13 +81,13 @@ window.onload = () => {
     window.requestAnimationFrame(tick);
 
     canvas.addEventListener('mousemove', function (event) {
-        component.vs.mouseX.value.set(event.offsetX);
-        component.vs.mouseY.value.set(event.offsetY);
+        comp.vs.mouseX.value.set(event.offsetX);
+        comp.vs.mouseY.value.set(event.offsetY);
     });
 
 
     slider.addEventListener('input', () => {
-        let copy = component.vs.circles.value.value;
+        let copy = circles();
         let obj = copy[selectedCircleIndex];
         obj.radius = slider.value;
 
@@ -104,7 +96,7 @@ window.onload = () => {
         obj.path = newPath;
 
         copy[selectedCircleIndex] = obj;
-        component.vs.circles.value.set(copy);
+        comp.vs.circles.value.set(copy);
         //TODO add schedulecommand
     });
 }
