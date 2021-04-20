@@ -9,7 +9,6 @@ let nameElement = document.getElementById('name');
 let surnameElement = document.getElementById('surname');
 
 window.onload = async () => {
-
     await system.addComponent(comp);
     system.update();
 
@@ -43,6 +42,8 @@ window.onload = async () => {
         comp.vs.names.value.set(copy);
     })
 }
+
+
 function changeValueBinder(element, value) {
     element.addEventListener('change', () => {
         value.value.set(element.value);
