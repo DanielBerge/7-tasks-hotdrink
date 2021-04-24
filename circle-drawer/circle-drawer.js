@@ -67,6 +67,9 @@ window.onload = () => {
     redo.addEventListener('click', () => history(false));
 
     canvas.addEventListener('click', event => {
+        if (dummy !== undefined) {
+            saveSlide();
+        }
         let any = false;
         circles().forEach(circle => {
             if (ctx.isPointInPath(circle.path, mouseX, mouseY) && circle.visible) {
@@ -154,12 +157,4 @@ let span = document.getElementsByClassName("close")[0];
 span.onclick = function () {
     adjust.style.display = "none";
     saveSlide();
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function (event) {
-    if (event.target === adjust) {
-        adjust.style.display = "none";
-        saveSlide();
-    }
 }
