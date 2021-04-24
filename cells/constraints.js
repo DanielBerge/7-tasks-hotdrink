@@ -33,6 +33,7 @@ function combiner(element, value) {
 }
 
 export function addConstraint(arg1, arg2, td) {
+    // language=textmate
     let component = hd.component`
            var sum, first, second;
            
@@ -49,6 +50,7 @@ export function addConstraint(arg1, arg2, td) {
 }
 
 export function divConstraint(arg1, arg2, td) {
+    // language=textmate
     let component = hd.component`
             var quotient, divisor, dividend;
             
@@ -64,6 +66,7 @@ export function divConstraint(arg1, arg2, td) {
 }
 
 export function multConstraint(arg1, arg2, td) {
+    // language=textmate
     let component = hd.component`
            var sum, first, second;
            
@@ -79,6 +82,7 @@ export function multConstraint(arg1, arg2, td) {
 }
 
 export function bindConstraint(arg, td) {
+    // language=textmate
     let component = hd.component`
             var val, binded;
             
@@ -93,6 +97,7 @@ export function bindConstraint(arg, td) {
 }
 
 export async function sumConstraint(arg1, arg2, td) {
+    // language=textmate
     let component = hd.component`
            var sum, vals = [];
            
