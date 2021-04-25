@@ -116,7 +116,7 @@ export async function sumConstraint(arg1, arg2, td) {
     let valIndex = 0;
 
     if (arg1.type !== Field || arg2.type !== Field) {
-        console.log("Cannot sum anything else than references");
+        console.error("Cannot sum anything else than references");
     } else {
         for (let i = arg1.val.charCodeAt(0); i <= arg2.val.charCodeAt(0); i++) {
             for (let j = parseInt(arg1.val.slice(1, arg1.val.length)); j <= parseInt(arg2.val.slice(1, arg2.val.length)); j++) {
@@ -124,7 +124,6 @@ export async function sumConstraint(arg1, arg2, td) {
                 sumBinder(elem, component.vs.vals, valIndex++);
             }
         }
-
         innerTextBinder(td, component.vs.sum);
     }
 }
