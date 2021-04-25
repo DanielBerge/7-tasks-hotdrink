@@ -1,9 +1,14 @@
 import {innerTextBinder} from "../packages/binders.js";
+import {Field} from "./parser.js";
 
 let system = new hd.ConstraintSystem();
 
 function chooseBinding(arg, variable) {
-    Number.isInteger(arg) ? variable.value.set(arg) : combiner(document.getElementById(arg), variable);
+    if (arg.type === Field) {
+        combiner(document.getElementById(arg.val), variable);
+    } else {
+        variable.value.set(arg.val)
+    }
 }
 
 function sumBinder(element, value, index) {
@@ -74,7 +79,7 @@ export function multConstraint(arg1, arg2, td) {
            constraint {
                (first, second -> sum) => first * second;
            }
-                        `;
+    `;
     system.addComponent(component);
     system.update();
     chooseBinding(arg1, component.vs.first);

@@ -43,7 +43,7 @@ export function evaluate(ast, td) {
         }
     };
 
-    if (ast.type === Num || ast.type === Field) return ast.val;
+    if (ast.type === Num || ast.type === Field) return ast;
     return operators[ast.val](ast.expr.map((value => evaluate(value, td))));
 }
 
