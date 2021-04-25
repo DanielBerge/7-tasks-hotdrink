@@ -8,9 +8,10 @@ function chooseBinding(arg, variable) {
 
 function sumBinder(element, value, index) {
     function updateValue() {
-        let list = value.value.value;
-        list[index] = parseInt(element.innerText === "" ? "0" : element.innerText);
-        value.value.set(list);
+        system.scheduleCommand([value.value], [value.value], (list) => {
+            list[index] = parseInt(element.innerText === "" ? "0" : element.innerText);
+            return list;
+        })
     }
 
     updateValue();
