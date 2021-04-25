@@ -20,26 +20,29 @@ window.onload = async () => {
 
     document.getElementById('create').addEventListener('click', () => {
         if (nameElement.value !== "" && surnameElement.value !== "") {
-            let copy = comp.vs.names.value.value;
-            copy.push(nameElement.value + ", " + surnameElement.value);
-            comp.vs.names.value.set(copy);
+            system.scheduleCommand([comp.vs.names.value], [comp.vs.names.value], (value) => {
+                value.push(nameElement.value + ", " + surnameElement.value);
+                return value;
+            })
         }
     })
 
     document.getElementById('update').addEventListener('click', () => {
         let name = listElement.value;
         if (name !== "") {
-            let copy = comp.vs.names.value.value;
-            copy[copy.indexOf(name)] = comp.vs.changing.value.value;
-            comp.vs.names.value.set(copy);
+            system.scheduleCommand([comp.vs.names.value, comp.vs.changing.value], [comp.vs.names.value], (names, changing) => {
+                names[names.indexOf(name)] = changing;
+                return names;
+            })
         }
     })
 
     document.getElementById('delete').addEventListener('click', () => {
         let name = nameElement.value + ", " + surnameElement.value;
-        let copy = comp.vs.names.value.value;
-        delete copy[copy.indexOf(name)];
-        comp.vs.names.value.set(copy);
+        system.scheduleCommand([comp.vs.names.value], [comp.vs.names.value], (names) => {
+            delete names[names.indexOf(name)];
+            return names;
+        })
     })
 }
 
