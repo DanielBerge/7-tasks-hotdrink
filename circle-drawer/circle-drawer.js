@@ -7,7 +7,6 @@ let ctx = canvas.getContext('2d');
 
 let selectedCircleIndex;
 let mouseX, mouseY;
-let circles = () => comp.vs.circles.value.value;
 
 let dummy;
 
@@ -17,28 +16,28 @@ let undo = document.getElementById('undo');
 let redo = document.getElementById('redo');
 
 function history(undo) {
-    let cCopy = circles();
-    let hCopy = comp.vs.history.value.value;
-    if (undo) {
-        let pop = cCopy.pop();
-        if (pop.ref !== undefined) {
-            cCopy[pop.ref].visible = true;
+    let vals = [comp.vs.circles.value, comp.vs.history.value];
+    system.scheduleCommand(vals, vals, (circles, history) => {
+        if (undo) {
+            let pop = circles.pop();
+            if (pop.ref !== undefined) {
+                circles[pop.ref].visible = true;
+            }
+            history.push(pop);
+        } else {
+            let pop = history.pop();
+            if (pop.ref !== undefined && circles[pop.ref] !== undefined) {
+                circles[pop.ref].visible = false;
+            }
+            circles.push(pop);
         }
-        hCopy.push(pop);
-    } else {
-        let pop = hCopy.pop();
-        if (pop.ref !== undefined && cCopy[pop.ref] !== undefined) {
-            cCopy[pop.ref].visible = false;
-        }
-        cCopy.push(pop);
-    }
-    comp.vs.circles.value.set(cCopy);
-    comp.vs.history.value.set(hCopy);
+        return [circles, history];
+    })
 }
 
 function tick() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    circles().forEach(circle => {
+    comp.vs.circles.value.value.forEach(circle => {
         if (circle.visible) {
             if (ctx.isPointInPath(circle.path, mouseX, mouseY)) {
                 ctx.fillStyle = 'green';
@@ -71,7 +70,7 @@ window.onload = () => {
             saveSlide();
         }
         let any = false;
-        circles().forEach(circle => {
+        comp.vs.circles.value.value.forEach(circle => {
             if (ctx.isPointInPath(circle.path, mouseX, mouseY) && circle.visible) {
                 // Placement of modal
                 adjust.style.display = "block";
@@ -79,23 +78,24 @@ window.onload = () => {
                 adjust.style.left = circle.x + "px";
 
                 slider.value = circle.radius;
-                selectedCircleIndex = circles().indexOf(circle);
+                selectedCircleIndex = comp.vs.circles.value.value.indexOf(circle);
                 any = true;
             }
         });
         if (!any) {
             let path = new Path2D();
             path.arc(event.x - 10, event.y - 100, 40, 0, 2 * Math.PI);
-            let copy = circles();
-            copy.push({
-                x: event.x - 10,
-                y: event.y - 100,
-                radius: 40,
-                path: path,
-                visible: true,
+
+            system.scheduleCommand([comp.vs.circles.value], [comp.vs.circles.value, comp.vs.history.value], (circles) => {
+                circles.push({
+                    x: event.x - 10,
+                    y: event.y - 100,
+                    radius: 40,
+                    path: path,
+                    visible: true,
+                })
+                return [circles, []];
             })
-            comp.vs.circles.value.set(copy)
-            comp.vs.history.value.set([]);
         }
     })
 
@@ -107,49 +107,50 @@ window.onload = () => {
 
 
     slider.addEventListener('input', () => {
-        let copy = circles();
-        let obj = copy[selectedCircleIndex];
+        system.scheduleCommand([comp.vs.circles.value], [comp.vs.circles.value], (circles) => {
+            let obj = circles[selectedCircleIndex];
+            obj.visible = false;
+            circles[selectedCircleIndex] = obj;
+
+            let newPath = new Path2D();
+            newPath.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
+
+            dummy = {
+                x: obj.x,
+                y: obj.y,
+                radius: slider.value,
+                path: newPath,
+                visible: true,
+                ref: selectedCircleIndex,
+            }
+            return circles;
+        })
+    });
+}
+
+function saveSlide() {
+    system.scheduleCommand([comp.vs.circles.value], [comp.vs.circles.value, comp.vs.history.value], (circles) => {
+        let obj = circles[selectedCircleIndex];
         obj.visible = false;
-        copy[selectedCircleIndex] = obj;
-        comp.vs.circles.value.set(copy);
+
+        dummy = undefined;
 
         let newPath = new Path2D();
         newPath.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
 
-        dummy = {
+        circles.push({
             x: obj.x,
             y: obj.y,
             radius: slider.value,
             path: newPath,
             visible: true,
             ref: selectedCircleIndex,
-        }
+        });
 
-    });
-}
+        circles[selectedCircleIndex] = obj;
+        return [circles, []]
+    })
 
-function saveSlide() {
-    let copy = circles();
-    let obj = copy[selectedCircleIndex];
-    obj.visible = false;
-
-    dummy = undefined;
-
-    let newPath = new Path2D();
-    newPath.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
-
-    copy.push({
-        x: obj.x,
-        y: obj.y,
-        radius: slider.value,
-        path: newPath,
-        visible: true,
-        ref: selectedCircleIndex,
-    });
-
-    copy[selectedCircleIndex] = obj;
-    comp.vs.circles.value.set(copy);
-    comp.vs.history.value.set([]);
 }
 
 // When the user clicks on <span> (x), close the modal
