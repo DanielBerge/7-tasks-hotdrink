@@ -1,8 +1,5 @@
 import {innerTextBinder} from "../packages/binders.js";
 
-let countElement = document.getElementById('count');
-let buttonElement = document.getElementById('button');
-
 let system = new hd.ConstraintSystem();
 
 window.onload = () => {
@@ -13,8 +10,9 @@ window.onload = () => {
     system.addComponent(comp);
     system.update();
 
-    innerTextBinder(countElement, comp.vs.count);
-    buttonElement.addEventListener('click', () => {
-        system.scheduleCommand([comp.vs.count.value], [comp.vs.count.value], (count) => ++count );
+    innerTextBinder(document.getElementById('count'), comp.vs.count);
+
+    document.getElementById('button').addEventListener('click', () => {
+        system.scheduleCommand([comp.vs.count.value], [comp.vs.count.value], (count) => ++count);
     });
 }
