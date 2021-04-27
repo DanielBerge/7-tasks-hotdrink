@@ -1,6 +1,6 @@
 # The 7 tasks implemented using HotDrink
 
-[7 Tasks](https://eugenkiss.github.io/7guis/tasks/)
+[7GUIs: A GUI Programming Benchmark](https://eugenkiss.github.io/7guis/tasks/)
 
 ## How to run
 * `python3 -m http.server 8080`
