@@ -54,6 +54,37 @@ function tick() {
     window.requestAnimationFrame(tick);
 }
 
+function saveSlide() {
+    system.scheduleCommand([comp.vs.circles.value], [comp.vs.circles.value, comp.vs.history.value], (circles) => {
+        let obj = circles[selectedCircleIndex];
+        obj.visible = false;
+
+        dummy = undefined;
+
+        let newPath = new Path2D();
+        newPath.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
+
+        circles.push({
+            x: obj.x,
+            y: obj.y,
+            radius: slider.value,
+            path: newPath,
+            visible: true,
+            ref: selectedCircleIndex,
+        });
+
+        circles[selectedCircleIndex] = obj;
+        return [circles, []]
+    })
+
+}
+
+let span = document.getElementsByClassName("close")[0];
+span.onclick = function () {
+    adjust.style.display = "none";
+    saveSlide();
+}
+
 window.onload = () => {
     system.addComponent(comp);
     system.update();
@@ -126,36 +157,4 @@ window.onload = () => {
             return circles;
         })
     });
-}
-
-function saveSlide() {
-    system.scheduleCommand([comp.vs.circles.value], [comp.vs.circles.value, comp.vs.history.value], (circles) => {
-        let obj = circles[selectedCircleIndex];
-        obj.visible = false;
-
-        dummy = undefined;
-
-        let newPath = new Path2D();
-        newPath.arc(obj.x, obj.y, slider.value, 0, 2 * Math.PI);
-
-        circles.push({
-            x: obj.x,
-            y: obj.y,
-            radius: slider.value,
-            path: newPath,
-            visible: true,
-            ref: selectedCircleIndex,
-        });
-
-        circles[selectedCircleIndex] = obj;
-        return [circles, []]
-    })
-
-}
-
-// When the user clicks on <span> (x), close the modal
-let span = document.getElementsByClassName("close")[0];
-span.onclick = function () {
-    adjust.style.display = "none";
-    saveSlide();
 }
