@@ -3,6 +3,7 @@ import {innerTextBinder} from "../packages/binders.js";
 let system = new hd.ConstraintSystem();
 
 window.onload = () => {
+    // language=textmate
     let comp = hd.component`
         var count = 0;
     `;
